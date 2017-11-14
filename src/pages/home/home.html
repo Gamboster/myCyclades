@@ -21,15 +21,21 @@
     <ion-item>
       <ion-label>Number of Players</ion-label>
       <ion-select [(ngModel)]="numberOfPlayers" (ngModelChange)="changeNumberOfPlayers()" cancelText="Cancel" okText="Ok">
-        <ion-option value="2">2</ion-option>
+        <ion-option *ngIf="gameMode != 'titans' && gameMode != 'all'" value="2">2</ion-option>
         <ion-option value="3">3</ion-option>
         <ion-option value="4">4</ion-option>
         <ion-option value="5">5</ion-option>
         <ion-option *ngIf="gameMode === 'titans' || gameMode === 'all'" value="6">6</ion-option>
       </ion-select>
     </ion-item>
+    <ion-item *ngIf="gameMode === 'hades' || gameMode === 'all'">
+      <ion-label>Favores Divinos</ion-label>
+      <ion-checkbox color="dark" [(ngModel)]="divineFavors"></ion-checkbox>
+    </ion-item>
+    <small *ngIf="gameMode === 'hades' || gameMode === 'all'">
+      Activa el módulo #4 de la expansión de Hades: Favores Divinos
+    </small>
 
   </ion-list>
   <button (click)="playGame()" ion-button secondary>Play game!</button>
-  <button (click)="prueba()" ion-button secondary>Prueba</button>
 </ion-content>

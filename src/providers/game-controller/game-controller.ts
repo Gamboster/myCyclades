@@ -7,6 +7,7 @@ export class GameControllerProvider {
   public pruebaString: string;
   public gameMode: string;
   public numberOfPlayers: number;
+  public divineFavors: boolean;
 
   public allGods: Array<any> = [
     {
@@ -41,12 +42,64 @@ export class GameControllerProvider {
     }
   ];
 
+  public allSecondaryGods: Array<any> = [
+    {
+      name: 'Afrodita',
+      number: 0,
+      image: 'assets/imgs/secondary-gods/afrodita.jpg'
+    },
+    {
+      name: 'Artemisa',
+      number: 1,
+      image: 'assets/imgs/secondary-gods/artemisa.jpg'
+    },
+    {
+      name: 'Demeter',
+      number: 2,
+      image: 'assets/imgs/secondary-gods/demeter.jpg'
+    },
+    {
+      name: 'Dionisio',
+      number: 3,
+      image: 'assets/imgs/secondary-gods/dionisio.jpg'
+    },
+    {
+      name: 'Hefesto',
+      number: 4,
+      image: 'assets/imgs/secondary-gods/hefesto.jpg'
+    },
+    {
+      name: 'Hera',
+      number: 5,
+      image: 'assets/imgs/secondary-gods/hera.jpg'
+    },
+    {
+      name: 'Hermes',
+      number: 6,
+      image: 'assets/imgs/secondary-gods/hermes.jpg'
+    },
+    {
+      name: 'Hestia',
+      number: 7,
+      image: 'assets/imgs/secondary-gods/hestia.jpg'
+    },
+    {
+      name: 'Hecate',
+      number: 8,
+      image: 'assets/imgs/secondary-gods/hecate.jpg'
+    }
+  ];
+
   public thisGameGods: Array<any>; // Gods for selected game mode
   public selectedGods: Array<any>; // Gods for the current turn
+
+  public unselectedSecondaryGods: Array<any>; // Secondary Gods for selected game mode
+  public currentSecondaryGod: any; // An object with the current secondary god
 
   public hadesThreat: number = null; // Only to play with Hades expansion
   public cycladesDice: any = [0, 1, 1, 2, 2, 3];
   public hadesEnabled: boolean;
+  public turns: number;
 
   constructor() {
     console.log('Hello GameControllerProvider Provider');
@@ -55,16 +108,23 @@ export class GameControllerProvider {
     this.selectedGods = [];
     this.hadesThreat = 0;
     this.hadesEnabled = false;
+    this.currentSecondaryGod = null;
+    this.turns = 0;
   }
 
   setGameSettings(settings: any) {
     this.gameMode = settings.gameMode;
     this.numberOfPlayers = settings.numberOfPlayers;
+    this.divineFavors = settings.divineFavors;
   }
 
   public startGame(): void {
+    this.turns = 0;
     this.gameStarted = true;
     this.pruebaString = "El provider funciona y el juego comienza!";
+    if (this.divineFavors) {
+      this.unselectedSecondaryGods = this.allSecondaryGods.slice(); // Empty slice is used to clone the original array
+    }
     this.gameGodsSelector();
   }
 
@@ -87,6 +147,7 @@ export class GameControllerProvider {
 
   public shuffleGods() {
     let randomNumber: number = null;
+    let randomDivineFavor: number = null;
     let randomToThreat1: number = null;
     let randomToThreat2: number = null;
     let totalDrawDices: number = 0;
@@ -101,6 +162,11 @@ export class GameControllerProvider {
         this.hadesEnabled = true;
       }
       console.log("Amenaza Hades: ", this.hadesThreat);
+      if (this.divineFavors) {
+        randomDivineFavor = Math.floor(Math.random() * (this.unselectedSecondaryGods.length));
+        this.currentSecondaryGod = this.unselectedSecondaryGods[randomDivineFavor];
+        this.unselectedSecondaryGods.splice(randomDivineFavor, 1);
+      }
     }
     switch (this.numberOfPlayers) {
       case 2:
@@ -145,18 +211,37 @@ export class GameControllerProvider {
       this.selectedGods.push(this.allGods[5]);
       this.hadesEnabled = false;
       this.hadesThreat = 0;
+      if (this.divineFavors) {
+        this.unselectedSecondaryGods = this.allSecondaryGods.slice(); // Empty slice is used to clone the original array
+        this.currentSecondaryGod = null;
+      }
     }
     this.gameGodsSelector();
-    console.log("Los dioses que jugaran esta ronda", this.selectedGods);
+    this.turns = this.turns + 1;
+
     return this.selectedGods;
+  }
+
+  public getCurrentSecondaryGod() {
+    return this.currentSecondaryGod;
+  }
+
+  public getHadesThreat(): number {
+    return this.hadesThreat;
+  }
+
+  public getDivineFavors(): boolean {
+    return this.divineFavors;
+  }
+
+  public getTurnNumber(): number {
+    return this.turns;
   }
 
   public endGame(): void {
     this.gameStarted = false;
-  }
-
-  public prueba(): string {
-    return this.pruebaString;
+    this.turns = 0;
+    this.hadesThreat = 0;
   }
 
 }

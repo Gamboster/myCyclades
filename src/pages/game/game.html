@@ -11,13 +11,21 @@
 
 
 <ion-content padding>
+  <div>
+    <span>Amenaza: {{ hadesThreat }}</span>
+    <span>Turno: {{ turnNumber }}</span>
+  </div>
   <div *ngIf="startedGame">
-    <div class="gods" *ngFor="let god of selectedGods">
-      <img src="{{ god.image }}" alt="{{ god.name }} - image">
+    <div>
+      <div class="gods" *ngFor="let god of selectedGods">
+        <img src="{{ god.image }}" alt="{{ god.name }} - image">
+      </div>
+      <div class="gods" *ngIf="selectedSecondaryGod">
+        <img src="{{ selectedSecondaryGod.image }}" alt="{{ selectedSecondaryGod.name }} - image">
+      </div>
     </div>
     <button (click)="shuffle()" ion-button secondary>Shuffle</button>
   </div>
   <button *ngIf="!startedGame" (click)="startGame()" ion-button secondary>Start Game!</button>
   <button *ngIf="startedGame" (click)="finishGame()" ion-button secondary>Finish Game</button>
-  <button (click)="prueba()" ion-button secondary>Prueba</button>
 </ion-content>

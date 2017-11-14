@@ -12,6 +12,9 @@ export class GamePage {
 
   public startedGame: boolean;
   public selectedGods: Array<any>;
+  public selectedSecondaryGod: any;
+  public hadesThreat: number;
+  public turnNumber: number;
 
   constructor(
     public navCtrl: NavController,
@@ -20,6 +23,8 @@ export class GamePage {
   ) {
     this.startedGame = false;
     this.selectedGods = [];
+    this.selectedSecondaryGod = null;
+    this.turnNumber = 0;
   }
 
   ionViewDidLoad() {
@@ -43,10 +48,11 @@ export class GamePage {
     //randomNumber = Math.floor(Math.random() * (3 - 0));
     //console.log(randomNumber);
     this.selectedGods = this.gameControllerProvider.shuffleGods();
-  }
-
-  prueba() {
-    console.log(this.gameControllerProvider.prueba());
+    if (this.gameControllerProvider.getDivineFavors()) {
+      this.selectedSecondaryGod = this.gameControllerProvider.getCurrentSecondaryGod();
+    }
+    this.turnNumber = this.gameControllerProvider.getTurnNumber();
+    this.hadesThreat = this.gameControllerProvider.getHadesThreat();
   }
 
 }
